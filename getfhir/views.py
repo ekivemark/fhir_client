@@ -48,15 +48,6 @@ CLIENT_SECRET = settings.OAUTH_TEST_INFO['CLIENT_SECRET']
 TOKEN_URL = settings.OAUTH_TEST_INFO['TOKEN_URL']
 AUTH_URL = settings.OAUTH_TEST_INFO['AUTH_URL']
 
-SERVICE = OAuth2Service(
-    name="CMS BlueButton FHIR",
-    client_id=CLIENT_ID,
-    client_secret=CLIENT_SECRET,
-    access_token_url=TOKEN_URL,
-    authorize_url=AUTH_URL,
-    base_url=settings.OAUTH_TEST_INFO['BASE']
-)
-
 
 def test_callback(request, *args, **kwargs):
     """
@@ -65,7 +56,7 @@ def test_callback(request, *args, **kwargs):
     """
 
     print("Request:", request)
-
+    
     code = request.GET['code']
     state = request.GET['state']
 
@@ -198,7 +189,15 @@ def fhir_service(request):
 
 
     """
-
+ 
+    SERVICE = OAuth2Service(name="CMS BlueButton FHIR",
+    client_id=CLIENT_ID,
+    client_secret=CLIENT_SECRET,
+    access_token_url=TOKEN_URL,
+    authorize_url=AUTH_URL,
+    base_url=settings.OAUTH_TEST_INFO['BASE']
+    )
+    
     # service = OAuth2Service(
     #     name="CMS BlueButton FHIR",
     #     client_id=CLIENT_ID,
@@ -232,9 +231,5 @@ def fhir_call(request):
     :param request:
     :return:
     """
-
-
-
-
 
     pass
