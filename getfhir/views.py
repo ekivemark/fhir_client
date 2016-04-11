@@ -268,6 +268,7 @@ def fhir_call(request):
     content = OrderedDict(convert)
     context = {}
     context['template'] = "result.html"
+    context['name'] = "Patient"
     context['get_fmt'] = "json"
     context['pass_to'] = url
     context['content'] =  json.dumps(content, indent=4)

@@ -17,7 +17,7 @@
         </ul>
     </div>
 {% endblock %}
-{% block pagename %}{{ settings.APPLICATION_TITLE }} | api/v1/{{ name }}{% endblock %}
+{% block pagename %}{{ settings.APPLICATION_TITLE }}:{{ name }}{% endblock %}
 {% block content %}
 
        <div class="container-fluid">
@@ -36,11 +36,6 @@
                         <div class="col-md-12 well">
                             <h4>User displayable content: [{% if get_fmt %}{{ get_fmt }}{% else %}{{ in_fmt|upper }}{% endif %}]</h4>
                             <p>&nbsp;</p>
-                            <pre>
-                                <code>
-                                    {{ content }}
-                                </code>
-                            </pre>
                             {% if text %}<p>{{ text|safe }}</p>{% endif %}
                             {% if error %}<p>{{ error }}</p>{% endif %}
                             <p>&nbsp;</p>
@@ -48,9 +43,12 @@
 
                    </div>
                      <div class="col-md-12 well">
-                       <pre>
-                           {{ result }}
-                       </pre>
+                        <pre>
+                                <code>
+                                    {{ content }}
+                                </code>
+                            </pre>
+                       
                      </div>
 
         </div>
