@@ -143,11 +143,15 @@ def test_callback(request, *args, **kwargs):
     fmt = "json"
     if is_valid_state(state):
 
+        context['template'] = "result.html"
+        context['get_fmt'] = "json"
+        context['display']  = "Patient"
         context['code'] = code
         context['state'] = state
 
         result = save_code(state, code)
         context['return_to'] = Server_Name() + reverse('oauth2_fhir')
+        context['goto']  = "a<href=/>Home</a>"
 
         # data = dict(code=code, redirect_uri=REDIRECT_URI)
         # session = SERVICE.get_auth_session()
@@ -156,11 +160,15 @@ def test_callback(request, *args, **kwargs):
         #     print("Session:", session)
         # context['session'] = session
 
-        return HttpResponse(json.dumps(context, indent=4),
-                            content_type="application/%s" % fmt)
+        return render_to_response(context['template'],
+                                  RequestContext(request,
+                                                 context))
+        # return HttpResponse(json.dumps(context, indent=4),
+        #                     content_type="application/%s" % fmt)
     else:
         context['error'] = "Error: Invalid state"
         context['state'] = state
+        context['goto']  = "a<href=/>Home</a>"
 
         return HttpResponse(json.dumps(context, indent=4),
                             content_type="application/%s" % fmt)
@@ -258,9 +266,18 @@ def fhir_call(request):
     convert = json.loads(r.text, object_pairs_hook=OrderedDict)
 
     content = OrderedDict(convert)
+    context = {}
+    context['template'] = "result.html"
+    context['get_fmt'] = "json"
+    context['pass_to'] = url
+    context['content'] =  json.dumps(content, indent=4)
 
-    return HttpResponse(json.dumps(content, indent=4),
-                        content_type="application/%s" % "json")
+    return render_to_response(context['template'],
+                              RequestContext(request,
+                                             context))
+
+    # return HttpResponse(json.dumps(content, indent=4),
+    #                     content_type="application/%s" % "json")
 
 
 def home_index(request):
