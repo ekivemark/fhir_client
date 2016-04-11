@@ -17,11 +17,13 @@ from django.conf.urls import url
 from django.contrib import admin
 
 from getfhir.views import (test_callback,
-                           fhir_service)
+                           fhir_service,
+                           fhir_call)
 
 urlpatterns = [
     url(r'^oauth2_fhir$', fhir_service, name="oauth2_fhir"),
     url(r'^o/endpoint/$', test_callback, name="oauth2_callback"),
+    url(r'^fhir$', fhir_call, name="fhir_call"),
 
     # admin
     url(r'^admin/', admin.site.urls),

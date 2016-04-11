@@ -49,6 +49,82 @@ TOKEN_URL = settings.OAUTH_TEST_INFO['TOKEN_URL']
 AUTH_URL = settings.OAUTH_TEST_INFO['AUTH_URL']
 
 
+def fhir_service(request):
+    """
+    Test OAuth 2.0 access using rauth
+
+       service = OAuth2Service(
+                   name='example',
+                   client_id='123',
+                   client_secret='456',
+                   access_token_url='https://example.com/token',
+                   authorize_url='https://example.com/authorize',
+                   base_url='https://example.com/api/')
+
+    Given the simplicity of OAuth 2.0 now this object `service` can be used to
+    retrieve an authenticated session in two simple steps::
+
+        # the return URL is used to validate the request
+        params = {'redirect_uri': 'http://example.com/',
+                  'response_type': 'code'}
+        url = service.get_authorize_url(**params)
+
+        # once the above URL is consumed by a client we can ask for an access
+        # token. note that the code is retrieved from the redirect URL above,
+        # as set by the provider
+        data = {'code': 'foobar',
+                'grant_type': 'authorization_code',
+                'redirect_uri': 'http://example.com/'}
+
+        session = service.get_auth_session(data=data)
+
+
+    # https://api.bbonfhir.com/o/authorize?state=random_state_string
+    # &client_id=HDHZqA7dEnAif9PRq1atwWXMtkZNXUtZodb93iH0&response_type=code
+
+    # Authorization goes here:
+
+    # http://localhost:8080/o/endpoint/?code=9GIdEZI7B0GxYMU5mPhKz4rCg6Nhv6
+    # &state=random_state_string
+
+
+    """
+
+    SERVICE = OAuth2Service(name="CMS BlueButton FHIR",
+                            client_id=CLIENT_ID,
+                            client_secret=CLIENT_SECRET,
+                            access_token_url=TOKEN_URL,
+                            authorize_url=AUTH_URL,
+                            base_url=settings.OAUTH_TEST_INFO['BASE']
+    )
+
+    # service = OAuth2Service(
+    #     name="CMS BlueButton FHIR",
+    #     client_id=CLIENT_ID,
+    #     client_secret=CLIENT_SECRET,
+    #     access_token_url=TOKEN_URL,
+    #     authorize_url=AUTH_URL,
+    #     base_url=settings.OAUTH_TEST_INFO['BASE']
+    # )
+
+    # code = uuid4()
+    # raw = service.get_raw_access_token()
+    # if settings.DEBUG:
+    #     print("Raw:", raw)
+    state = create_state()
+
+    params = {'redirect_uri': REDIRECT_URI,
+          'state': state,
+          'response_type': 'code'}
+
+    url = SERVICE.get_authorize_url(**params)
+
+    if settings.DEBUG:
+        print("Authorization URL:", url)
+
+    return HttpResponseRedirect(url)
+
+
 def test_callback(request, *args, **kwargs):
     """
     OAuth Testing endpoint. Enter this as the Callback url
@@ -149,87 +225,40 @@ def save_code(state, code):
         return None
 
 
-def fhir_service(request):
+def get_code(client, auth):
     """
-    Test OAuth 2.0 access using rauth
-
-       service = OAuth2Service(
-                   name='example',
-                   client_id='123',
-                   client_secret='456',
-                   access_token_url='https://example.com/token',
-                   authorize_url='https://example.com/authorize',
-                   base_url='https://example.com/api/')
-
-    Given the simplicity of OAuth 2.0 now this object `service` can be used to
-    retrieve an authenticated session in two simple steps::
-
-        # the return URL is used to validate the request
-        params = {'redirect_uri': 'http://example.com/',
-                  'response_type': 'code'}
-        url = service.get_authorize_url(**params)
-
-        # once the above URL is consumed by a client we can ask for an access
-        # token. note that the code is retrieved from the redirect URL above,
-        # as set by the provider
-        data = {'code': 'foobar',
-                'grant_type': 'authorization_code',
-                'redirect_uri': 'http://example.com/'}
-
-        session = service.get_auth_session(data=data)
-
-
-    # https://api.bbonfhir.com/o/authorize?state=random_state_string
-    # &client_id=HDHZqA7dEnAif9PRq1atwWXMtkZNXUtZodb93iH0&response_type=code
-
-    # Authorization goes here:
-
-    # http://localhost:8080/o/endpoint/?code=9GIdEZI7B0GxYMU5mPhKz4rCg6Nhv6
-    # &state=random_state_string
-
-
+    Get code from Session_State
+    :return:
     """
- 
-    SERVICE = OAuth2Service(name="CMS BlueButton FHIR",
-    client_id=CLIENT_ID,
-    client_secret=CLIENT_SECRET,
-    access_token_url=TOKEN_URL,
-    authorize_url=AUTH_URL,
-    base_url=settings.OAUTH_TEST_INFO['BASE']
-    )
-    
-    # service = OAuth2Service(
-    #     name="CMS BlueButton FHIR",
-    #     client_id=CLIENT_ID,
-    #     client_secret=CLIENT_SECRET,
-    #     access_token_url=TOKEN_URL,
-    #     authorize_url=AUTH_URL,
-    #     base_url=settings.OAUTH_TEST_INFO['BASE']
-    # )
 
-    # code = uuid4()
-    # raw = service.get_raw_access_token()
-    # if settings.DEBUG:
-    #     print("Raw:", raw)
-    state = create_state()
+    try:
+        ss = Session_State.objects.get(auth=auth, name=client)
+        return ss.code
 
-    params = {'redirect_uri': REDIRECT_URI,
-          'state': state,
-          'response_type': 'code'}
-
-    url = SERVICE.get_authorize_url(**params)
-
-    if settings.DEBUG:
-        print("Authorization URL:", url)
-
-    return HttpResponseRedirect(url)
+    except Session_State.DoesNotExist:
+        return None
 
 
 def fhir_call(request):
     """
-
     :param request:
     :return:
     """
 
-    pass
+    code = get_code(CLIENT_ID, AUTH_URL)
+
+    url = settings.OAUTH_TEST_INFO['BASE']
+    url += "/fhir/Patient?_format=json"
+
+    r = requests.get(url)
+
+    convert = json.loads(r.text, object_pairs_hook=OrderedDict)
+
+    content = OrderedDict(convert)
+
+    return HttpResponse(json.dumps(content, indent=4),
+                        content_type="application/%s" % "json")
+
+
+
+
