@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load staticfiles %}
+{% block pretitle %}{% endblock %}
+{% block extra_head %}
+{% endblock %}
+
+{% block breadcrumbs %}
+       <div class="container">
+        <ul class="breadcrumb">
+            <li class="active">Home</li>
+        </ul>
+    </div>
+{% endblock %}
+{% block pagename %}FHIR Testing Client{% endblock %}
+{% block content %}
+
+
+    <div class="hero-unit">
+
+        <div class="container-fluid">
+            <p>This application is provided to enable testing of OAuth2.0 secured FHIR APIs</p>
+            <ol>
+                <li class="h4">
+                    <p class="h6">Enter Client ID and Secret</p></li>
+                <li class="h4">
+                    <p class="h6">Enter Authorization and Token URLs</p></li>
+                <li class="h4">
+                    <p class="h6">Authenticate via OAuth2.0</p></li>
+                <li class="h4">
+                    <p class="h6">Test the API</p></li>
+            </ol>
+
+        </div>
+    </div>
+
+
+{% endblock %}

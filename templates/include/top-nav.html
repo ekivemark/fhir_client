@@ -1,0 +1,40 @@
+{% load i18n %}
+{% load static from staticfiles %}
+
+<div class="container-fluid">
+    <div class="navbar navbar-default navbar-fixed-top">
+{% comment %}
+Add a color to the NavBar if we are on localhost:8000
+Just to avoid confusion...
+{% endcomment %}
+        <ul class="nav navbar-nav">
+            <li>
+                <a href="{% if request.session.auth_device %}{% url 'api:home' %}
+                {% else %}{% url 'home' %}{% endif %}" contenteditable="false"
+                   class="navbar-brand">
+                    <img src="{% static 'img/layout/blue-button-trim.png' %}"
+                     style="vertical-align:middle;display:inline-block;max-height:100%;max-width:100%"
+                     alt="{{ settings.APPLICATION_TITLE }}">
+                </a>
+            </li>
+            <li>
+                <a class="" href="{% url 'home' %}"
+                   contenteditable="false" title="{{ settings.APPLICATION_TITLE }} Home">
+                    <i class="fa fa-home fa-lg"></i></a>
+            </li>
+
+            <li>
+                <a class="" href="{% url 'home' %}"
+                   contenteditable="false" title="{{ settings.APPLICATION_TITLE }} Home">
+                    {{ settings.APPLICATION_TITLE }} Home</a>
+            </li>
+
+        </ul>
+
+        <ul class="nav navbar-nav navbar-right">
+
+        </ul>
+
+    </div>
+</div>
+

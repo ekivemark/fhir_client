@@ -103,6 +103,10 @@ ADMINS = (
 MANAGERS = ADMINS
 ALLOWED_HOSTS = []
 
+APPLICATION_TITLE = PARSE_INI.get('global', 'application_title')
+if APPLICATION_TITLE == "":
+    APPLICATION_TITLE = "FHIR Testing Client"
+
 
 # Application definition
 
@@ -115,15 +119,19 @@ BASE_APPS = [
     'django.contrib.staticfiles',
 ]
 
-CUSTOM_APPS = [
+THIRD_PARTY_APPS = [
+    'bootstrap3',
+    'bootstrapform',
     'oauth2_provider',
     'corsheaders',
-    '_start',
-    'getfhir',
-
 ]
 
-INSTALLED_APPS = BASE_APPS + CUSTOM_APPS
+CUSTOM_APPS = [
+    '_start',
+    'getfhir',
+]
+
+INSTALLED_APPS = BASE_APPS + THIRD_PARTY_APPS + CUSTOM_APPS
 
 MIDDLEWARE_CLASSES = [
     'django.middleware.security.SecurityMiddleware',
@@ -151,13 +159,17 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django_settings_export.settings_export',
             ],
+            # 'loaders': [
+            #     'django.template.loaders.filesystem.Loader',
+            #     'django.template.loaders.app_directories.Loader',
+            # ],
         },
     },
 ]
 
 WSGI_APPLICATION = '_start.apache2.wsgi.application'
-
 
 # Database
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
@@ -202,9 +214,31 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/1.9/howto/static-files/
+# https://docs.djangoproject.com/en/1.7/howto/static-files/
+
+# URL prefix for admin static files -- CSS, JavaScript and images.
+# Make sure to use a trailing slash.
+# Examples: "http://foo.com/static/admin/", "/static/admin/".
+ADMIN_MEDIA_PREFIX = '/static/admin/'
+
+# Additional locations of static files
+STATICFILES_DIRS = (
+    # Put strings here, like "/home/html/static" or "C:/www/django/static".
+    # Always use forward slashes, even on Windows.
+    # Don't forget to use absolute paths, not relative paths.
+    os.path.join(BASE_DIR, 'sitestatic'),
+)
+
+# List of finder classes that know how to find static files in
+# various locations.
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
+)
+
+STATIC_ROOT = '/var/www/html/'+DOMAIN+'/'
 
 STATIC_URL = '/static/'
 
@@ -229,3 +263,9 @@ OAUTH_TEST_INFO = {'CLIENT_ID': "HDHZqA7dEnAif9PRq1atwWXMtkZNXUtZodb93iH0",
 OAUTH_VERSION = 2.0
 
 CORS_ORIGIN_ALLOW_ALL = True
+
+SETTINGS_EXPORT = [
+    'DEBUG',
+    'APPLICATION_TITLE',
+    'DOMAIN',
+]

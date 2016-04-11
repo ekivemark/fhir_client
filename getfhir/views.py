@@ -18,8 +18,11 @@ from http.client import HTTPSConnection
 from httplib2 import BasicAuthentication
 
 from django.conf import settings
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import (HttpResponse,
+                         HttpResponseRedirect)
 from django.core.urlresolvers import reverse
+from django.shortcuts import (render_to_response,
+                              RequestContext)
 
 from rauth import OAuth2Service
 from uuid import uuid4
@@ -260,5 +263,16 @@ def fhir_call(request):
                         content_type="application/%s" % "json")
 
 
+def home_index(request):
+    """
+    Home page
+    :param request:
+    :return:
+    """
 
+    context = {}
+    user = request.user
+
+    return render_to_response('index.html',
+                              RequestContext(request, context, ))
 
