@@ -26,11 +26,32 @@
                 <li class="h4">
                     <p class="h6">Enter Authorization and Token URLs</p></li>
                 <li class="h4">
-                    <p class="h6"><a href="{% url "oauth2_fhir" %}">Authenticate via OAuth2.0</a></p></li>
+                    <p class="h6"><a href="{% url "connect" %}">Authenticate via OAuth2.0</a></p></li>
                 <li class="h4">
-                    <p class="h6"><a href="{% url "fhir_call" %}">Test the API</a></p></li>
+                    <p class="h6"><a href="{% url "fhir_patient" %}">Test the API</a></p></li>
             </ol>
 
+        </div>
+        <div class="col-md-8 well">
+            <table class="table table-striped">
+                <thead class="table thead-inverse">
+                    <td>Remote user</td><td>Name</td><td>email</td><td>FHIR Id</td>
+                </thead>
+                <tr>
+                    <td>{{ me.user_name }}</td><td>{{ me.first_name }} {{ me.last_name }}</td>
+                    <td>{{ me.email }}</td><td>{{ me.fhir_url_id }}</td>
+                </tr>
+            </table>
+        </div>
+        <div class="col-md-8 well">
+            <table class="table table-striped">
+                <thead class="table thead-inverse">
+                    <td>Client ID</td><td>Client Secret</td><td>User</td><td>Callback</td>
+                </thead>
+                <tr>
+                    <td></td><td></td><td></td><td></td>
+                </tr>
+            </table>
         </div>
     </div>
 

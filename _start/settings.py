@@ -120,6 +120,7 @@ BASE_APPS = [
 ]
 
 THIRD_PARTY_APPS = [
+    #'social.apps.django_app.default',
     'bootstrap3',
     'bootstrapform',
     'oauth2_provider',
@@ -133,6 +134,16 @@ CUSTOM_APPS = [
 
 INSTALLED_APPS = BASE_APPS + THIRD_PARTY_APPS + CUSTOM_APPS
 
+AUTHENTICATION_BACKENDS = (
+    # 'social.backends.open_id.OpenIdAuth',
+    # 'social.backends.google.GoogleOpenId',
+    # 'social.backends.google.GoogleOAuth2',
+    # 'social.backends.google.GoogleOAuth',
+    # 'social.backends.twitter.TwitterOAuth',
+    # 'social.backends.yahoo.YahooOpenId',
+    'django.contrib.auth.backends.ModelBackend',
+)
+
 MIDDLEWARE_CLASSES = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -141,6 +152,7 @@ MIDDLEWARE_CLASSES = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    #'social.apps.django_app.middleware.SocialAuthExceptionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -159,6 +171,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                # 'social.apps.django_app.context_processors.backends',
+                # 'social.apps.django_app.context_processors.login_redirect',
                 'django_settings_export.settings_export',
             ],
             # 'loaders': [
@@ -247,17 +261,40 @@ STATIC_URL = '/static/'
 #                    'URL': "https://api.twitter.com/oauth/request_token"
 #                    }
 
-OAUTH_TEST_INFO = {'CLIENT_ID': "HDHZqA7dEnAif9PRq1atwWXMtkZNXUtZodb93iH0",
-                   'CLIENT_SECRET': "H4BIyuyGTBTVG9CvVFtcMhYYIS4xQScbsYtaREEcYHN1VsIf4MeWjxYC56dqc970ACDnf5A1Kge6rVz5yecaTJjlORv502XLIcKlO5JwX2bAsw5bSXFdsjtsXVbX7ScE",
+
+####
+#### PYTHON-SOCIAL-AUTH SETTINGS
+####
+# SOCIAL_AUTH_AUTHENTICATION_BACKENDS = (
+#     'social.backends.open_id.OpenIdAuth',
+#     'social.backends.google.GoogleOpenId',
+#     'social.backends.google.GoogleOAuth2',
+#     'social.backends.google.GoogleOAuth',
+#     'social.backends.twitter.TwitterOAuth',
+#     'social.backends.yahoo.YahooOpenId',
+# )
+#
+# #SOCIAL_AUTH_USER_MODEL = 'User'
+# SOCIAL_AUTH_URL_NAMESPACE = 'social'
+# SOCIAL_AUTH_ADMIN_USER_SEARCH_FIELDS = ['username', 'first_name', 'email']
+
+
+OAUTH_TEST_INFO = {'CLIENT_ID': 'EJi3gHNyWZpyynuK77A2RQ5uJndruIsze0eivUMw',
+                   'CLIENT_SECRET': "mVp4oO4ph2lnlpTcxhfgu4pBP6kivQLOo8jHCgZjJmxZbxyrT2AKKHP7yWGlrDDeEyRQTkOPOvcaWYBnKrKetmoojYNBENUa4szCzhItAzTE4JTa0LyucsQwXvoM7YSk",
+                   # 'CLIENT_ID': "HDHZqA7dEnAif9PRq1atwWXMtkZNXUtZodb93iH0",
+                   # 'CLIENT_SECRET': "H4BIyuyGTBTVG9CvVFtcMhYYIS4xQScbsYtaREEcYHN1VsIf4MeWjxYC56dqc970ACDnf5A1Kge6rVz5yecaTJjlORv502XLIcKlO5JwX2bAsw5bSXFdsjtsXVbX7ScE",
                    'USER': "healthcamp_mark",
                    'CLIENT_TYPE': "confidential",
                    'GRANT_TYPE': "authorization_code",
                    'NAME': "First_Test",
                    'REDIRECT_URI': "http://localhost:8080/o/endpoint/",
                    #'URL': "https://api.bbonfhir.com/o/token",
-                   'AUTH_URL': "https://api.bbonfhir.com/o/authorize",
-                   'TOKEN_URL': "https://api.bbonfhir.com/o/token",
-                   'BASE': "https://api.bbonfhir.com",
+                   # 'AUTH_URL': "https://api.bbonfhir.com/o/authorize",
+                   # 'TOKEN_URL': "https://api.bbonfhir.com/o/token",
+                   'AUTH_URL': "http://localhost:8000/o/authorize/",
+                   'TOKEN_URL': "http://localhost:8000/o/token/",
+                   #'BASE': "https://api.bbonfhir.com",
+                   'BASE': "http://localhost:8000",
                    }
 
 OAUTH_VERSION = 2.0

@@ -11,10 +11,12 @@ Created: 4/6/16 1:10 PM
 """
 __author__ = 'Mark Scrimshire:@ekivemark'
 
+import json
 import socket
 
 from threading import local
 from django.conf import settings
+from django.http import QueryDict
 
 _user = local()
 
@@ -67,3 +69,45 @@ def Server_Name():
     # use socket to return server name
     return socket.gethostname()
 
+
+def update_dict(context, context_override={}):
+    """Add dict to existing dict with overwrites"""
+
+    for key, value in context_override.items():
+        context[key] = value
+
+    return context
+
+
+def look_at_request(request, all=False):
+    """Analyze headers and GET"""
+
+    print("===================-----------------=================")
+    print("Request:", request)
+
+    if request.method == 'GET':
+        print("GET in", request)
+    elif request.method == 'POST':
+        print("POST in", request.method)
+        if not QueryDict(request.body) == QueryDict(None):
+            data = QueryDict(request.body)
+            print("POST Body:", data)
+    else:
+        print("not a GET or Post in:", request.method )
+
+    if len(request.META) > 0:
+        other_values = []
+        for key, value in request.META.items():
+            if "HTTP_" in key or "CONTENT" in key or "X-FRAME" in key.upper():
+                print("Header:", key, ":", request.META[key])
+            else:
+                other_values.append(key)
+
+        print("Other Values:", other_values)
+
+    else:
+        print(request.META)
+
+    print("===================-----------------=================")
+
+    return

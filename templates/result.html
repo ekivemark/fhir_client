@@ -1,24 +1,24 @@
 {% extends "base.html" %}
-{% if get_fmt == "xml" or get_fmt == "json" %}
-    {{ result }}
+{% if get_fmt == "xml" or get_fmt == "json" %}{{ result }}
 {% else %}
-{% load i18n %}
-{% load static from staticfiles %}
-{% block pretitle %}Welcome to the {% endblock %}
-{% block title %}{{ settings.APPLICATION_TITLE }} v1 {{ name }}/{% endblock %}
-{% block extra_head %}
 
-{% endblock %}
-{% block breadcrumbs %}
+    {% load i18n %}
+    {% load static from staticfiles %}
+    {% block pretitle %}Welcome to the {% endblock %}
+    {% block title %}{{ settings.APPLICATION_TITLE }} v1 {{ name }}/{% endblock %}
+    {% block extra_head %}
+
+    {% endblock %}
+    {% block breadcrumbs %}
     <div class="container">
         <ul class="breadcrumb">
             <li><a href="{% url 'home' %}">Home</a></li>
             <li class="active">{{ display }}</li>
         </ul>
     </div>
-{% endblock %}
-{% block pagename %}{{ settings.APPLICATION_TITLE }}:{{ name }}{% endblock %}
-{% block content %}
+    {% endblock %}
+    {% block pagename %}{{ settings.APPLICATION_TITLE }}:{{ display }}{% endblock %}
+    {% block content %}
 
        <div class="container-fluid">
 
@@ -44,15 +44,14 @@
                    </div>
                      <div class="col-md-12 well">
                         <pre>
-                                <code>
-                                    {{ content }}
-                                </code>
+    <code>
+{{ content }}
+    </code>
                             </pre>
-                       
+
                      </div>
 
         </div>
 
-{% endblock %}
-
+    {% endblock %}
 {% endif %}

@@ -32,7 +32,15 @@ Just to avoid confusion...
         </ul>
 
         <ul class="nav navbar-nav navbar-right">
-
+            <li>
+                {% if user.is_authenticated %}
+                    <a class="" href="{% url 'logout' %}?next=/"
+                        contenteditable="false" title="Logout">Logout</a>
+                {% else %}
+                    <a class="" href="{% url 'login' %}?next=/"
+                   contenteditable="false" title="Login">Login</a>
+                {% endif %}
+            </li>
         </ul>
 
     </div>
