@@ -165,6 +165,11 @@ class FHIRConnect(BaseConnect):
             'grant_type': 'authorization_code',
         })
 
+        if settings.DEBUG:
+            print("=============")
+            print("CODE:", code)
+            print("=============")
+
         print("KWARGS in get_a_session:", kwargs)
 
         payload = {'redirect_uri': redirect_uri,
@@ -184,11 +189,11 @@ class FHIRConnect(BaseConnect):
             print("R.text:", r.text)
 
         content = r.json()
-        if "expires" in content:
+        if "expires_in" in content:
             access = save_tokens(state,
                                  content['access_token'],
                                  content['refresh_token'],
-                                 content['expires'])
+                                 content['expires_in'])
 
         return r
 
@@ -200,38 +205,44 @@ class FHIRConnect(BaseConnect):
         """
         if settings.DEBUG:
             print("Using State:", state)
+            print("=============")
+            print("CODE:", code)
+            print("=============")
+
         if access_expired(state):
             # renew tokens
             print("Expired -so renew")
             tokens = get_tokens(state)
 
-            if settings.DEBUG:
-                print("Working with tokens:" , tokens)
+            tokens = self.renew_tokens(code, state, tokens)
 
-            payload = {#'redirect_uri': redirect_uri,
-                       'grant_type': 'refresh_token',
-                       'client_id': self.service.client_id,
-                       'client_secret': self.service.client_secret,
-                       #'code': code,
-                       #'state': state,
-                       'refresh_token': tokens['refresh_token']
-                       }
-            if settings.DEBUG:
-                print("Sending:", payload)
-
-            headers = {'content_type': 'application/x-www-form-urlencoded; charset=UTF-8',
-                       'Authorization': 'Bearer ' + code}
-
-            r = requests.post(self.access_token_url, data=payload, headers=headers)
-            print('We got r back: ', r.text)
-            # make call to renew tokens
-            if 'access_token' in r.text:
-                result = r.json()
-                save_tokens(state,
-                            result['access_token'],
-                            result['refresh_token'],
-                            result['expires'])
-            # update tokens
+            # if settings.DEBUG:
+            #     print("Working with tokens:" , tokens)
+            #
+            # payload = {#'redirect_uri': redirect_uri,
+            #            'grant_type': 'refresh_token',
+            #            'client_id': self.service.client_id,
+            #            'client_secret': self.service.client_secret,
+            #            #'code': code,
+            #            #'state': state,
+            #            'refresh_token': tokens['refresh_token']
+            #            }
+            # if settings.DEBUG:
+            #     print("Sending:", payload)
+            #
+            # headers = {'content_type': 'application/x-www-form-urlencoded; charset=UTF-8',
+            #            'Authorization': 'Bearer ' + code}
+            #
+            # r = requests.post(self.access_token_url, data=payload, headers=headers)
+            # print('We got r back: ', r.text)
+            # # make call to renew tokens
+            # if 'access_token' in r.text:
+            #     result = r.json()
+            #     save_tokens(state,
+            #                 result['access_token'],
+            #                 result['refresh_token'],
+            #                 result['expires'])
+            # # update tokens
             tokens = get_tokens(state)
 
 
@@ -260,10 +271,16 @@ class FHIRConnect(BaseConnect):
     def renew_tokens(self, code, state, tokens):
         """Renew the access_token"""
 
+        if settings.DEBUG:
+            print("using tokens:", tokens)
+            print("=============")
+            print("CODE:", code)
+            print("=============")
         payload = {  # 'redirect_uri': redirect_uri,
             'grant_type': 'refresh_token',
             'client_id': settings.OAUTH_TEST_INFO['CLIENT_ID'],
             'client_secret': settings.OAUTH_TEST_INFO['CLIENT_SECRET'],
+            #'token_type': 'Bearer',
             # 'code': code,
             # 'state': state,
             'refresh_token': tokens['refresh_token']
@@ -289,7 +306,13 @@ class FHIRConnect(BaseConnect):
                     result['access_token'],
                     result['refresh_token'],
                     result['expires'])
+        else:
+            if settings.DEBUG:
+                print("tokens were NOT updated.")
        # update tokens
         tokens = get_tokens(state)
 
         return tokens
+
+
+

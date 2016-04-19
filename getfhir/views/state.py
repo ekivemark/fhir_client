@@ -11,20 +11,25 @@ Created: 4/15/16 10:05 PM
 """
 __author__ = 'Mark Scrimshire:@ekivemark'
 
+import datetime
+import requests
+
 from uuid import uuid4
 
 from django.conf import settings
 from django.utils.timezone import now
 
 from ..models import Session_State
+from _start.utils import now_add_secs
 
 AUTH_URL= settings.OAUTH_TEST_INFO['AUTH_URL']
 CLIENT_ID = settings.OAUTH_TEST_INFO['CLIENT_ID']
+REVOKE_URL = settings.OAUTH_TEST_INFO['REVOKE_URL']
 
 
 def create_state():
 
-    state_save = {'state': uuid4().urn[9:],'AUTH_URL': AUTH_URL,'CLIENT': CLIENT_ID}
+    state_save = {'state': uuid4().urn[9:],'AUTH_URL': AUTH_URL,'CLIENT_ID': CLIENT_ID}
     if settings.DEBUG:
         print("State to save:", state_save)
     saved = save_created_state(state_save)
@@ -54,17 +59,17 @@ def save_created_state(state):
     print("Saving Created State:", state)
 
     try:
-        session_state = Session_State.objects.get(auth=state['AUTH_URL'],
-                                                  name=state['CLIENT'])
-        session_state.state = state['state']
-        session_state.save()
+        ss = Session_State.objects.get(auth=state['AUTH_URL'],
+                                       name=state['CLIENT_ID'])
+        ss.state = state['state']
+        ss.save()
     except Session_State.DoesNotExist:
-        session_state = Session_State.objects.create(auth=state['AUTH_URL'],
-                                                     name=state['CLIENT'],
-                                                     state=state['state'])
+        ss = Session_State.objects.create(auth=state['AUTH_URL'],
+                                          name=state['CLIENT_ID'],
+                                          state=state['state'])
 
     if settings.DEBUG:
-        print("Session_state:", session_state)
+        print("Session_state:", ss)
 
     return state['state']
 
@@ -129,7 +134,7 @@ def save_tokens(state, access, refresh, expires=36000):
             print('found by state:', ss)
         ss.atoken = access
         ss.rtoken = refresh
-        ss.expires = now() + expires
+        ss.expires = now_add_secs(expires)
         ss.save()
         if settings.DEBUG:
             print("Saved State/Access/Refresh:", state, access, refresh)
@@ -203,8 +208,47 @@ def get_tokens(state):
         ss = Session_State.objects.get(state=state)
         tokens['access_token'] = ss.atoken
         tokens['refresh_token'] = ss.rtoken
-        tokens['expires'] = ss.expires
+        tokens['expires_in'] = ss.expires
         tokens['expired'] = ss.is_expired
         return tokens
     except Session_State.DoesNotExist:
         return None
+
+
+def revoke_tokens():
+    """ Get Code and revoke tokens and remove from Session_State"""
+
+    try:
+        ss = Session_State.objects.get(name=settings.OAUTH_TEST_INFO['CLIENT_ID'],
+                                       auth=settings.OAUTH_TEST_INFO['AUTH_URL'])
+
+        code = ss.code
+        headers = {'content_type': 'application/x-www-form-urlencoded; charset=UTF-8',
+                   # 'Authorization': 'Bearer ' + code}
+                   'Authorization': 'Bearer ' + code}
+
+        # POST /o/revoke_token/ HTTP/1.1
+        # Content-Type: application/x-www-form-urlencoded
+        # token=XXXX&client_id=XXXX&client_secret=XXXX
+        payload = {'client_id': settings.OAUTH_TEST_INFO['CLIENT_ID'],
+                   'client_secret': settings.OAUTH_TEST_INFO['CLIENT_SECRET'],
+                   'token': ss.atoken,
+        }
+
+        url =settings.OAUTH_TEST_INFO['REVOKE_URL']
+        r = requests.post(url, data = payload, headers=headers)
+
+        if r.status_code == 200:
+            ss.atoken = ""
+            ss.rtoken = ""
+            ss.code = ""
+            ss.expires = now()
+            ss.save()
+        return r
+
+    except Session_State.DoesNotExist:
+        pass
+        return None
+
+
+

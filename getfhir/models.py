@@ -10,7 +10,7 @@ class Session_State(models.Model):
     name  = models.CharField(max_length=80, db_index=True)
     code  = models.CharField(max_length=80, null=True, blank=True)
     atoken = models.CharField(max_length=40, null=True, blank=True)
-    expires = models.DateTimeField(auto_now=False)
+    expires = models.DateTimeField(auto_now=False, null=True)
     rtoken = models.CharField(max_length=40, null=True, blank=True)
 
     def __str__(self):

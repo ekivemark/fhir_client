@@ -279,6 +279,10 @@ STATIC_URL = '/static/'
 # SOCIAL_AUTH_ADMIN_USER_SEARCH_FIELDS = ['username', 'first_name', 'email']
 
 
+#127.0.0.1       my-fake-test-redirect-on-localhost.com:8080
+#127.0.0.1       bluefitbutton.ekivemark.com:8000
+
+
 OAUTH_TEST_INFO = {'CLIENT_ID': 'EJi3gHNyWZpyynuK77A2RQ5uJndruIsze0eivUMw',
                    'CLIENT_SECRET': "mVp4oO4ph2lnlpTcxhfgu4pBP6kivQLOo8jHCgZjJmxZbxyrT2AKKHP7yWGlrDDeEyRQTkOPOvcaWYBnKrKetmoojYNBENUa4szCzhItAzTE4JTa0LyucsQwXvoM7YSk",
                    # 'CLIENT_ID': "HDHZqA7dEnAif9PRq1atwWXMtkZNXUtZodb93iH0",
@@ -287,14 +291,15 @@ OAUTH_TEST_INFO = {'CLIENT_ID': 'EJi3gHNyWZpyynuK77A2RQ5uJndruIsze0eivUMw',
                    'CLIENT_TYPE': "confidential",
                    'GRANT_TYPE': "authorization_code",
                    'NAME': "First_Test",
-                   'REDIRECT_URI': "http://localhost:8080/o/endpoint/",
+                   'REDIRECT_URI': "http://my-fake-test-redirect-on-localhost.com:8080/o/endpoint/",
                    #'URL': "https://api.bbonfhir.com/o/token",
                    # 'AUTH_URL': "https://api.bbonfhir.com/o/authorize",
                    # 'TOKEN_URL': "https://api.bbonfhir.com/o/token",
-                   'AUTH_URL': "http://localhost:8000/o/authorize/",
-                   'TOKEN_URL': "http://localhost:8000/o/token/",
+                   'AUTH_URL': "http://bluefitbutton.ekivemark.com:8000/o/authorize/",
+                   'TOKEN_URL': "http://bluefitbutton.ekivemark.com:8000/o/token/",
+                   'REVOKE_URL': "http://bluefitbutton.ekivemark.com:8000/o/revoke_token/",
                    #'BASE': "https://api.bbonfhir.com",
-                   'BASE': "http://localhost:8000",
+                   'BASE': "http://bluefitbutton.ekivemark.com:8000",
                    }
 
 OAUTH_VERSION = 2.0

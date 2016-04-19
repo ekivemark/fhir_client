@@ -11,12 +11,16 @@ Created: 4/6/16 1:10 PM
 """
 __author__ = 'Mark Scrimshire:@ekivemark'
 
+import datetime
 import json
 import socket
 
-from threading import local
 from django.conf import settings
 from django.http import QueryDict
+from django.utils.timezone import now
+
+
+from threading import local
 
 _user = local()
 
@@ -111,3 +115,14 @@ def look_at_request(request, all=False):
     print("===================-----------------=================")
 
     return
+
+
+def now_add_secs(secs):
+    if settings.DEBUG:
+        print("Now:", now())
+    fulldate = datetime.datetime.now()
+    fulldate += datetime.timedelta(seconds=secs)
+    if settings.DEBUG:
+        print("Then:", fulldate)
+    return fulldate
+

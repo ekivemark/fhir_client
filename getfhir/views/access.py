@@ -23,6 +23,7 @@ from django.contrib.auth import (authenticate,
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 
+from django.http import QueryDict
 from django.shortcuts import (HttpResponseRedirect,
                               render_to_response,
                               RequestContext)
@@ -31,7 +32,7 @@ from django.utils.timezone import now
 from _start.utils import look_at_request
 
 from .fhir_connect import FHIRConnect
-from .state import create_state, get_code, get_state, get_tokens
+from .state import create_state, save_code, get_code, get_state, get_tokens, revoke_tokens
 
 FHIR_CLIENT_ID = settings.OAUTH_TEST_INFO['CLIENT_ID']
 FHIR_CLIENT_SECRET = settings.OAUTH_TEST_INFO['CLIENT_SECRET']
@@ -58,11 +59,26 @@ def authorize(request):
         print("in the Authorize")
         look_at_request(request, True)
         print('back in Authorize from request analysis')
-    try:
+    if 'code' in request.GET:
         code = request.GET['code']
-        state = request.GET['state']
-    except:
-        raise Exception("Can't get code from url")
+    else:
+        info = request.GET.copy()
+        print(info)
+        msg = ""
+        for k, v in info.items():
+            msg += "{%s:%s}" % (k, v)
+
+        messages.error(request,"There was a problem logging in to the remote server."
+                               "Did you authorize the access? %s" % msg)
+        #aise Exception("Can't get code from url")
+        return HttpResponseRedirect(reverse('home'))
+
+    state = request.GET['state']
+    coded = save_code(state, code)
+    if settings.DEBUG:
+        print("==================================================")
+        print("Coded with State and Code:", coded, "|", state, "|", code)
+        print("==================================================")
 
     fhir_service = FHIRConnect(FHIR_CLIENT_ID, FHIR_CLIENT_SECRET)
     #session = fhir_service.get_session(code, state, FHIR_REDIRECT_URI)
@@ -126,14 +142,22 @@ def fhir_patient(request):
     if settings.DEBUG:
         print("Got context...", context)
 
+
     state = get_state(FHIR_CLIENT_ID, fhir_service.authorize_url)
     code = get_code(FHIR_CLIENT_ID, fhir_service.authorize_url)
     tokens = get_tokens(state)
 
-    if settings.DEBUG:
-        print("Tokens:", tokens, " State:", state, " Code:", code)
+    if tokens['access_token'] == "" and tokens['refresh_token'] == "":
+        if settings.DEBUG:
+            print("No tokens - do a login")
+        next = settings.DOMAIN+"/fhir_patient"
+        return HttpResponseRedirect(reverse("connect"), {'next': next})
 
-    if tokens['expires'] <= now() :
+    if settings.DEBUG:
+        print("==================================================")
+        print("Tokens:", tokens, " State:", state, " Code:", code)
+        print("==================================================")
+    if tokens['expires_in'] <= now() :
         if settings.DEBUG:
             print("Tokens are expired:", tokens)
         tokens = fhir_service.renew_tokens(code, state, tokens)
@@ -198,3 +222,15 @@ def userlogout(request):
     # Redirect to a success page.
     return HttpResponseRedirect(reverse('home'))
 
+
+def remote_logout(request):
+
+    r = revoke_tokens()
+
+    if r.status_code == 200:
+        messages.info(request,
+                      "Remote access tokens have been revoked. Do remote login to reconnect.")
+    else:
+        messages.error("Problem with remote logout. %s:%2" % (r.status, r.text))
+
+    return HttpResponseRedirect(reverse('home'))

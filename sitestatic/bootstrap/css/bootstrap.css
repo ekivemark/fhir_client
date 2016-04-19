@@ -658,6 +658,7 @@ a:focus {
     display: table;
     line-height: 0;
     content: "";
+
 }
 
 .container-fluid:after {

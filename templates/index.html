@@ -20,6 +20,7 @@
 
         <div class="container-fluid">
             <p>This application is provided to enable testing of OAuth2.0 secured FHIR APIs</p>
+            {% if user.is_authenticated %}
             <ol>
                 <li class="h4">
                     <p class="h6">Enter Client ID and Secret</p></li>
@@ -29,8 +30,16 @@
                     <p class="h6"><a href="{% url "connect" %}">Authenticate via OAuth2.0</a></p></li>
                 <li class="h4">
                     <p class="h6"><a href="{% url "fhir_patient" %}">Test the API</a></p></li>
-            </ol>
+                <li class="h4">
+                    <p class="h6"><a href="{% url "remote_logout" %}">Revoke token on remote server</a></p></li>
 
+            </ol>
+            {% else %}
+                <div class="Col-lg-8 well">
+                    <a class="" href="{% url 'login' %}?next=/"
+                                contenteditable="false" title="Login"><h1>Login</h1></a>
+                </div>
+            {% endif %}
         </div>
         <div class="col-md-8 well">
             <table class="table table-striped">

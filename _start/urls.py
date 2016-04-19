@@ -18,7 +18,10 @@ from django.contrib import admin
 from django.contrib.auth.views import login, logout
 from django.core.urlresolvers import reverse_lazy
 
-from getfhir.views.access import userlogin, fhir_patient
+from getfhir.views.access import (userlogin,
+                                  fhir_patient,
+                                  remote_logout)
+
 from getfhir.views.views import (test_callback,
                                  fhir_service,
                                  fhir_call,
@@ -37,6 +40,9 @@ urlpatterns = [
     url(r'^fhir_patient$', fhir_patient, name="fhir_patient"),
 
     url(r'^connect$', connect, name="connect"),
+
+    # Remote revoke token
+    url(r'^remote_logout/$', remote_logout, name="remote_logout"),
 
     # login / logout
     url(r'^login$', login, name="login"),
