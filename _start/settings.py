@@ -129,7 +129,7 @@ THIRD_PARTY_APPS = [
 
 CUSTOM_APPS = [
     '_start',
-    'getfhir',
+    'apps.getfhir',
 ]
 
 INSTALLED_APPS = BASE_APPS + THIRD_PARTY_APPS + CUSTOM_APPS

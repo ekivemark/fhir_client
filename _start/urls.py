@@ -18,18 +18,19 @@ from django.contrib import admin
 from django.contrib.auth.views import login, logout
 from django.core.urlresolvers import reverse_lazy
 
-from getfhir.views.access import (userlogin,
-                                  fhir_patient,
-                                  remote_logout)
+from apps.getfhir.views.access import (userlogin,
+                                       fhir_patient,
+                                       remote_logout,
+                                       connect,
+                                       authorize)
 
-from getfhir.views.views import (test_callback,
-                                 fhir_service,
-                                 fhir_call,
-                                 home_index,
-                                 about,
-                                 snooping)
+from apps.getfhir.views.views import (test_callback,
+                                      fhir_service,
+                                      fhir_call,
+                                      home_index,
+                                      about,
+                                      snooping)
 
-from getfhir.views.access import (connect, authorize)
 
 urlpatterns = [
     url(r'^$', home_index, name='home'),

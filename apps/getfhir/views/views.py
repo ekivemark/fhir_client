@@ -20,8 +20,8 @@ from django.shortcuts import (render_to_response,
                               RequestContext)
 
 from django.views.decorators.csrf import csrf_exempt
-from getfhir.error import (ERROR_CODE,
-                           kickout,)
+from apps.getfhir.error import (ERROR_CODE,
+                                kickout, )
 from rauth import OAuth2Service
 
 from _start.utils import (notNone,
