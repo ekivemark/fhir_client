@@ -1,0 +1,15 @@
+    <div class="container-fluid col-lg-12">
+        <ul class="breadcrumb">
+
+            {% for name, link in livebreadcrumb.items %}
+                <li><a href="{{ link }}">{{ name }}</a></li>
+            {% endfor %}
+
+            {% for name, link in deadbreadcrumb.items %}
+                <li class="active">{{ name }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+
+

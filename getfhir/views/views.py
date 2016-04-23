@@ -402,6 +402,15 @@ def home_index(request):
     """
 
     context = {}
+    # Breadcrumbs dicts are used in the include/breadcrumbs.html include within the
+    # breadcrumb block
+    # set livebreadcrumb and deadbreadcrumb to populate breadcrumbs at top of page.
+    # deadbreadcrumb will just display a name with no active link. Use this for the current
+    # active page
+    # livebreadcrumb contains a dictionary of pages with links for breadcrumb page navigation
+    # context['livebreadcrumb'] = {'Home': reverse('home'),}
+    context['deadbreadcrumb'] = {'Home': reverse('home')}
+
 
     # context['me'] = get_remote_user(request)
     # print('context["me"]', context['me'])
@@ -415,6 +424,22 @@ def home_index(request):
     #     print("ME:", context['me'])
 
     return render_to_response('index.html',
+                              RequestContext(request, context, ))
+
+
+def about(request):
+    """
+    About page
+
+    :param request:
+    :return:
+    """
+
+    context = {'api_target': settings.OAUTH_TEST_INFO['BASE']}
+    context['livebreadcrumb'] = {'Home': reverse('home')}
+    context['deadbreadcrumb'] = {'About': reverse('about')}
+
+    return render_to_response('about.html',
                               RequestContext(request, context, ))
 
 

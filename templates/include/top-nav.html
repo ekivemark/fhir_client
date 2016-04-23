@@ -2,13 +2,14 @@
 {% load static from staticfiles %}
 
 <div class="container-fluid">
-    <div class="navbar navbar-default navbar-fixed-top">
+    <div class="row">
+    <div class="nav nav-pills navbar navbar-default navbar-fixed-top">
 {% comment %}
 Add a color to the NavBar if we are on localhost:8000
 Just to avoid confusion...
 {% endcomment %}
-        <ul class="nav navbar-nav">
-            <li>
+        <ul class="nav navbar-nav col-lg-8 col-sm-12">
+            <li class="col-sm-12">
                 <a href="{% if request.session.auth_device %}{% url 'api:home' %}
                 {% else %}{% url 'home' %}{% endif %}" contenteditable="false"
                    class="navbar-brand">
@@ -17,13 +18,13 @@ Just to avoid confusion...
                      alt="{{ settings.APPLICATION_TITLE }}">
                 </a>
             </li>
-            <li>
+            <li class="col-sm-12">
                 <a class="" href="{% url 'home' %}"
                    contenteditable="false" title="{{ settings.APPLICATION_TITLE }} Home">
                     <i class="fa fa-home fa-lg"></i></a>
             </li>
 
-            <li>
+            <li class="col-sm-12">
                 <a class="" href="{% url 'home' %}"
                    contenteditable="false" title="{{ settings.APPLICATION_TITLE }} Home">
                     {{ settings.APPLICATION_TITLE }} Home</a>
@@ -31,18 +32,19 @@ Just to avoid confusion...
 
         </ul>
 
-        <ul class="nav navbar-nav navbar-right">
+        <ul class="nav navbar-nav navbar-right align-right col-lg-4 col-sm-12">
             <li>
                 {% if user.is_authenticated %}
                     <a class="" href="{% url 'logout' %}?next=/"
                         contenteditable="false" title="Logout">Logout</a>
                 {% else %}
-                    <a class="" href="{% url 'login' %}?next=/"
+                    <a class="align-right" href="{% url 'login' %}?next=/"
                    contenteditable="false" title="Login">Login</a>
                 {% endif %}
             </li>
         </ul>
 
+    </div>
     </div>
 </div>
 

@@ -26,12 +26,14 @@ from getfhir.views.views import (test_callback,
                                  fhir_service,
                                  fhir_call,
                                  home_index,
+                                 about,
                                  snooping)
 
 from getfhir.views.access import (connect, authorize)
 
 urlpatterns = [
     url(r'^$', home_index, name='home'),
+    url(r'^about$', about, name='about'),
     url(r'^oauth2_fhir$', fhir_service, name="oauth2_fhir"),
     # url(r'^o/endpoint/$', test_callback, name="oauth2_callback"),
     url(r'^o/endpoint/$', authorize, name="oauth2_callback"),

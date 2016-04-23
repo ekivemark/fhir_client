@@ -1,0 +1,41 @@
+ {% extends "base.html" %}
+ {% load i18n %}
+ {% load staticfiles %}
+ {% block pretitle %}{% endblock %}
+ {% block extra_head %} {% endblock %}
+
+ {% block pagename %}About {{ settings.APPLICATION_TITLE }}{% endblock %}
+ {% block content %}
+
+     <div class="row">
+         <div class="col-lg-12">
+             <h3 contenteditable="true">Demonstrating Interaction with BlueButton On FHIR</h3>
+         </div>
+     </div>
+<div class="section">
+     <div class="row">
+         <div class="col-lg-8 col-sm-12">
+             <p>
+                 <span>
+                     BlueButton On FHIR API target: <a href="{{ api_target }}">
+                     {{ api_target }}</a>.
+                 </span>
+             </p>
+             <p>
+                 <span>This client application is a demonstration of how to use OAuth2.0 to
+                     talk to a <a href="{{ api_target }}">BlueButton On FHIR data API</a> to get Patient and
+                     ExplanationOfBenefit (ie. Claims) data formats.&nbsp;
+                 </span>
+             </p>
+         </div>
+         <div class="col-lg-4 col-sm-12">
+            {% include 'include/logo-large.html' %}
+         </div>
+
+
+     </div>
+</div>
+
+
+
+ {% endblock %}
