@@ -42,6 +42,7 @@ urlpatterns = [
     url(r'^fhir_patient$', fhir_patient, name="fhir_patient"),
 
     url(r'^connect$', connect, name="connect"),
+    #url(r'^accounts/profile/$', home_index, name="profile"),
 
     # Remote revoke token
     url(r'^remote_logout/$', remote_logout, name="remote_logout"),

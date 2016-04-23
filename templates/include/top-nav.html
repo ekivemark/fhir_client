@@ -3,48 +3,36 @@
 
 <div class="container-fluid">
     <div class="row">
-    <div class="nav nav-pills navbar navbar-default navbar-fixed-top">
-{% comment %}
-Add a color to the NavBar if we are on localhost:8000
-Just to avoid confusion...
-{% endcomment %}
-        <ul class="nav navbar-nav col-lg-8 col-sm-12">
-            <li class="col-sm-12">
-                <a href="{% if request.session.auth_device %}{% url 'api:home' %}
-                {% else %}{% url 'home' %}{% endif %}" contenteditable="false"
-                   class="navbar-brand">
-                    <img src="{% static 'img/layout/blue-button-trim.png' %}"
-                     style="vertical-align:middle;display:inline-block;max-height:100%;max-width:100%"
-                     alt="{{ settings.APPLICATION_TITLE }}">
-                </a>
-            </li>
-            <li class="col-sm-12">
-                <a class="" href="{% url 'home' %}"
-                   contenteditable="false" title="{{ settings.APPLICATION_TITLE }} Home">
-                    <i class="fa fa-home fa-lg"></i></a>
-            </li>
-
-            <li class="col-sm-12">
-                <a class="" href="{% url 'home' %}"
-                   contenteditable="false" title="{{ settings.APPLICATION_TITLE }} Home">
-                    {{ settings.APPLICATION_TITLE }} Home</a>
-            </li>
-
-        </ul>
-
-        <ul class="nav navbar-nav navbar-right align-right col-lg-4 col-sm-12">
-            <li>
-                {% if user.is_authenticated %}
-                    <a class="" href="{% url 'logout' %}?next=/"
-                        contenteditable="false" title="Logout">Logout</a>
-                {% else %}
-                    <a class="align-right" href="{% url 'login' %}?next=/"
-                   contenteditable="false" title="Login">Login</a>
-                {% endif %}
-            </li>
-        </ul>
-
-    </div>
+        <div class="nav nav-pills navbar navbar-default navbar-fixed-top">
+            {% comment %}
+            Add a color to the NavBar if we are on localhost:8000
+            Just to avoid confusion...
+            {% endcomment %}
+            <ul class="nav navbar-nav col-lg-8 col-sm-12">
+                <li class="col-sm-12">
+                    <a href="{% if request.session.auth_device %}{% url 'api:home' %}
+                    {% else %}{% url 'home' %}{% endif %}" contenteditable="false"
+                       class="navbar-brand">
+                        <img src="{% static 'img/layout/blue-button-trim.png' %}"
+                         style="vertical-align:middle;display:inline-block;max-height:100%;max-width:100%"
+                         alt="{{ settings.APPLICATION_TITLE }}">
+                    </a>
+                </li>
+                <li class="col-sm-12">
+                    <a class="" href="{% url 'home' %}"
+                       contenteditable="false" title="{{ settings.APPLICATION_TITLE }} Home">
+                        <i class="fa fa-home fa-lg"></i></a>
+                </li>
+                <li class="col-sm-12">
+                    <a class="" href="{% url 'home' %}"
+                       contenteditable="false" title="{{ settings.APPLICATION_TITLE }} Home">
+                        {{ settings.APPLICATION_TITLE }} Home</a>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right align-right col-lg-4 col-sm-12">
+                {% include "include/top-nav-user-dropdown.html" %}
+            </ul>
+        </div>
     </div>
 </div>
 

@@ -311,3 +311,6 @@ SETTINGS_EXPORT = [
     'APPLICATION_TITLE',
     'DOMAIN',
 ]
+
+# login redirects to /accounts/profile unless overridden with LGIN_REDIRECT_URL
+LOGIN_REDIRECT_URL = '/'
