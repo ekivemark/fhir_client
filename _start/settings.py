@@ -28,6 +28,7 @@ from .utils import (str2bool,
 # You can generate a new SECRET_KEY using tools such as
 # http://www.miniwebtool.com/django-secret-key-generator/
 SECRET_KEY = 'FAKE_VALUE_REAL_VALUE_SET_FROM_.ENVS.SETTINGS_LOCAL'
+
 # Set the SECRET_KEY in envs/settings_local.py
 
 # Run machine/environment specific settings_local.py
@@ -36,6 +37,9 @@ SECRET_KEY = 'FAKE_VALUE_REAL_VALUE_SET_FROM_.ENVS.SETTINGS_LOCAL'
 
 # Use envs.settings_local.py as a model for your local machine or environment
 # specific settings file then load it here.
+
+BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+
 try:
     from .envs.settings_local import *
 except ImportError:
@@ -64,6 +68,7 @@ else:
     DEBUG = False
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+# BASE_DIR is set to the Parent Directory.
 try:
     BASE_DIR
 except NameError:

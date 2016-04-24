@@ -16,7 +16,7 @@ from ..utils import Server_Ip, Server_Name
 
 # Set a unique key
 # This should override the FAKE_KEY for SECRET_KEY defined in settings.py
-SECRET_KEY = 'FAKE_VALUE_REAL_VALUE_SET_FROM_..ENVS.SETTINGS_LOCAL'
+SECRET_KEY = "tdy4kyy)9%&3fkfp4$(ofskr7^2qm59h83f^zv9dt_feua!0!$"
 
 # Short system name - use it to prefix file names for things such as logging.
 SYSNAME = "fhir_cli"
@@ -29,15 +29,17 @@ SSL = False
 DOMAIN = "client.bbonfhir.com"
 
 # DEBUG Settings:
-DEBUG = True
-DEBUG_SETTINGS = DEBUG
+#DEBUG = True
+# DEBUG_SETTINGS = DEBUG
 
 # Allowed Hosts setting:
 ALLOWED_HOSTS = []
 
 # Get the Server Domain Name. eg. dev.bbonfhir.com
 # ie the server name to address this app
-if DEBUG:
+
+if True:
+#if DEBUG:
     ALLOWED_HOSTS = ['*']
 
 else:
@@ -59,14 +61,7 @@ LOCAL_APPS = [
    # Add machine/environment specific apps here
 ]
 
-# Get the Parent dirctory since we are in a sub folder
-PARENT_DIR = os.path.abspath('.')
-# BASE_DIR = os.path.dirname(os.path.dirname(__file__))
-
-BASE_DIR = PARENT_DIR
-
-# Database
-# https://docs.djangoproject.com/en/1.9/ref/settings/#databases
+BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 # Database
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
@@ -124,7 +119,7 @@ LOGGING = {
     }
 }
 
-LOGGING['handlers']['file']['filename'] = BASE_DIR + "/log/" + SYSNAME + ".log"
+LOGGING['handlers']['file']['filename'] = BASE_DIR + "/../log/" + SYSNAME + ".log"
 
 ####
 #
@@ -132,5 +127,4 @@ LOGGING['handlers']['file']['filename'] = BASE_DIR + "/log/" + SYSNAME + ".log"
 #
 ####
 print("COMPLETED:env.settings_local")
-
 
