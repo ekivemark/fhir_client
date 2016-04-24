@@ -1,9 +1,0 @@
-[global]
-secret_key = --INSERT_SECRET_KEY_HERE--
-domain = __ADD_DOMAIN_HERE__
-debug = True
-template_debug = True
-debug_settings = True
-#allowed_hosts = "*"
-allowed_hosts = .domain.tld,localhost,127.0.0.1
-application_title = FHIR Tester

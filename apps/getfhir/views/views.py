@@ -7,6 +7,7 @@ import base64
 import codecs
 
 import json
+import logging
 
 import requests
 from collections import OrderedDict
@@ -41,6 +42,7 @@ from .state import (get_state,
                     get_tokens,
                     )
 
+logger = logging.getLogger(__name__)
 
 # OAUTH_TEST_INFO = {'CLIENT_ID': "HDHZqA7dEnAif9PRq1atwWXMtkZNXUtZodb93iH0",
 #                    'CLIENT_SECRET': "H4BIyuyGTBTVG9CvVFtcMhYYIS4xQScbsYtaREEcYHN1VsIf4MeWjxYC56dqc970ACDnf5A1Kge6rVz5yecaTJjlORv502XLIcKlO5JwX2bAsw5bSXFdsjtsXVbX7ScE",
@@ -160,8 +162,8 @@ def test_callback(request, *args, **kwargs):
     """
     look_at_request(request)
 
-    print("Request:", request)
-    print("In the CallBack")
+    logger.debug("Request:", request)
+    logger.debug("In the CallBack")
     
     code = request.GET['code']
     state = request.GET['state']
@@ -412,7 +414,7 @@ def home_index(request):
     context['deadbreadcrumb'] = {'Home': reverse('home')}
 
 
-    # context['me'] = get_remote_user(request)
+    #context['me'] = get_remote_user(request)
     # print('context["me"]', context['me'])
     # if '401' in context['me']:
     #     print("we have an error")
@@ -439,6 +441,8 @@ def about(request):
     context['livebreadcrumb'] = {'Home': reverse('home')}
     context['deadbreadcrumb'] = {'About': reverse('about')}
 
+    logger.debug("In the about page", context)
+
     return render_to_response('about.html',
                               RequestContext(request, context, ))
 
@@ -458,7 +462,7 @@ def get_remote_user(request):
     """
 
     if settings.DEBUG:
-        print("Getting Remote User")
+        logger.debug("Getting Remote User")
     me = {}
 
     me['url'] = settings.OAUTH_TEST_INFO['BASE']
@@ -467,7 +471,7 @@ def get_remote_user(request):
 
 
     me = fhir_request(request, me)
-    print("me...", me)
+    logger.debug("me...", me)
     if 'errors' and 'code' in me:
         msg = build_message(request,me['errors'])
         return kickout(msg, me['code'])
@@ -481,7 +485,7 @@ def build_message(request, errors):
     for m in errors:
         msg.append(m)
     if settings.DEBUG:
-        print("Messages:", msg)
+        logger.debug("Messages:", msg)
     messages.error(request, msg)
 
     return msg

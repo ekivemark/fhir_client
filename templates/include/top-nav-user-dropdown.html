@@ -1,7 +1,7 @@
 <li class="dropdown">
     <!-- User dropdown right align -->
     {% if user.is_authenticated %}
-      <a href="{% url "login" %}?next={{ next }}" class="dropdown-toggle" data-toggle="dropdown"
+      <a href="{% url "login" %}?next={% if next %}{{ next }}{% else %}/{% endif %}" class="dropdown-toggle" data-toggle="dropdown"
          role="button"
          aria-haspopup="true"
          aria-expanded="false"><i class="fa fa-cogs"></i> {% if not user.first_name and not user.last_name %}

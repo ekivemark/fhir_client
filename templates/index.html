@@ -53,8 +53,12 @@
                             <td>Remote user</td><td>Name</td><td>email</td><td>FHIR Id</td>
                         </thead>
                         <tr>
-                            <td>{{ me.user_name }}</td><td>{{ me.first_name }} {{ me.last_name }}</td>
-                            <td>{{ me.email }}</td><td>{{ me.fhir_url_id }}</td>
+                            {% if me %}
+                                <td>{{ me.user_name }}</td>
+                                <td>{{ me.first_name }} {{ me.last_name }}</td>
+                                <td>{{ me.email }}</td>
+                                <td>{{ me.fhir_url_id }}</td>
+                            {% endif %}
                         </tr>
                     </table>
                 </div>

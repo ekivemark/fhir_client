@@ -9,18 +9,6 @@ https://docs.djangoproject.com/en/1.9/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.9/ref/settings/
 """
-
-from configparser import RawConfigParser
-# from ldap3 import (Server, Connection,
-#                    ALL, SUBTREE,
-#                    LDAPSocketOpenError,
-#                    LDAPOperationResult,)
-
-PARSE_INI = RawConfigParser()
-# http://stackoverflow.com/questions/4909958/django-local-settings/14545196#14545196
-
-
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 import json
 # import sys
@@ -31,82 +19,58 @@ from .utils import (str2bool,
                     Server_Ip,
                     Server_Name)
 
-BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+# SECURITY WARNING: keep the secret key used in production secret!
+# The real value is set in the envs.settings_local.py
+# settings_local.py is excluded from the git repository
+# Place other important keys, passwords etc. in .envs.settings_local.py
+# which is called at the start of settings.py
+
+# You can generate a new SECRET_KEY using tools such as
+# http://www.miniwebtool.com/django-secret-key-generator/
+SECRET_KEY = 'FAKE_VALUE_REAL_VALUE_SET_FROM_.ENVS.SETTINGS_LOCAL'
+# Set the SECRET_KEY in envs/settings_local.py
+
+# Run machine/environment specific settings_local.py
+# for an alternative that uses in files see:
+# http://stackoverflow.com/questions/4909958/django-local-settings/14545196#14545196
+
+# Use envs.settings_local.py as a model for your local machine or environment
+# specific settings file then load it here.
+try:
+    from .envs.settings_local import *
+except ImportError:
+    pass
+
+# settings.py should check for the values set in a local file.
+# if a setting is not found a default can be set.
+# This allows the application to run without a settings_local file found.
+
+###################
+#
+# SECURITY WARNING: don't run with debug turned on in production!
+#
+###################
+if DEBUG:
+    print("THIS APPLICATION IS RUNNING IN DEBUG MODE. SET FALSE FOR PRODUCTION USE!")
+    print("We are back from local:", ALLOWED_HOSTS )
+    print("LOCAL_APPS:", LOCAL_APPS)
+    print("SECRET_KEY:", SECRET_KEY)
+else:
+    DEBUG = False
+
+# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+
+if not BASE_DIR:
+    BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 APPLICATION_ROOT = BASE_DIR
 
-# Config file should be installed in parent directory
-# format is:
-# [global]
-# domain = dev.bbonfhir.com
-# debug = True
-# template_debug = True
-# debug_settings = True
-# email_host = box905.bluehost.com
-#
-
-CONFIG_FILE = '_start/local_ini/local.ini'
-# Read the config file
-PARSE_INI.read_file(open(os.path.join(APPLICATION_ROOT, CONFIG_FILE)))
-# Then use PARSE_INI.get(SECTION, VARIABLE) to read in value
-# Value is in string format
-# Use util functions to convert strings to boolean or Integer
-
+if not SYSNAME:
+    # Short system name - use it to prefix file names for things such as logging.
+    SYSNAME = "fhir_cli"
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
-
-
-# SECURITY WARNING: keep the secret key used in production secret!
-# The real value is set in the local_settings.py
-# local_settings.py is excluded from the git repository
-# Place other important keys, passwords etc. in local_settings.py
-# which is called at the end of settings.py
-
-# I recommend setting a default/false value in settings.py
-# and then overwriting in local_settings. This keeps the app
-# functional if anyone clones the repository
-# You can generate a new SECRET_KEY using tools such as
-# http://www.miniwebtool.com/django-secret-key-generator/
-#
-
-SECRET_KEY = 'FAKE_VALUE_REAL_VALUE_SET_FROM_..LOCAL.INI'
-SECRET_KEY = PARSE_INI.get('global', 'secret_key')
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = str2bool(PARSE_INI.get('global', 'debug'))
-
-#TEMPLATE_DEBUG = str2bool(PARSE_INI.get('global', 'template_debug'))
-
-DEBUG_SETTINGS = str2bool(PARSE_INI.get('global', 'debug_settings'))
-
-# Get the Server Domain Name. eg. dev.bbonfhir.com
-# ie the server name to address this app
-DOMAIN = PARSE_INI.get('global', 'domain')
-
-if DEBUG:
-    ALLOWED_HOSTS = []
-
-else:
-    ALLOWED_HOSTS = PARSE_INI.get('global', 'allowed_hosts').split(',')
-    ALLOWED_HOSTS.append(DOMAIN)
-    ALLOWED_HOSTS.append(Server_Ip())
-
-    # ALLOWED_HOSTS = ['.bbonfhir.com',
-    #                  'localhost',
-    #                  '127.0.0.1',
-    #                  DOMAIN]
-ADMINS = (
-    ('Mark Scrimshire', 'mark@ekivemark.com'),
-)
-
-MANAGERS = ADMINS
-ALLOWED_HOSTS = []
-
-APPLICATION_TITLE = PARSE_INI.get('global', 'application_title')
-if APPLICATION_TITLE == "":
-    APPLICATION_TITLE = "FHIR Testing Client"
-
 
 # Application definition
 
@@ -120,7 +84,6 @@ BASE_APPS = [
 ]
 
 THIRD_PARTY_APPS = [
-    #'social.apps.django_app.default',
     'bootstrap3',
     'bootstrapform',
     'oauth2_provider',
@@ -133,6 +96,11 @@ CUSTOM_APPS = [
 ]
 
 INSTALLED_APPS = BASE_APPS + THIRD_PARTY_APPS + CUSTOM_APPS
+
+# set LOCAL_APPS in .envs.settings_local
+if LOCAL_APPS:
+    INSTALLED_APPS = INSTALLED_APPS + LOCAL_APPS
+
 
 AUTHENTICATION_BACKENDS = (
     # 'social.backends.open_id.OpenIdAuth',
@@ -162,8 +130,7 @@ ROOT_URLCONF = '_start.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')]
-        ,
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -179,6 +146,8 @@ TEMPLATES = [
             #     'django.template.loaders.filesystem.Loader',
             #     'django.template.loaders.app_directories.Loader',
             # ],
+            # Need to pass Debug from local settings.
+            'debug': DEBUG,
         },
     },
 ]
@@ -188,13 +157,16 @@ WSGI_APPLICATION = '_start.apache2.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+# set DATABASES in envs.settings_local
+if DATABASES:
+    pass
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        }
     }
-}
-
 
 # Password validation
 # https://docs.djangoproject.com/en/1.9/ref/settings/#auth-password-validators
@@ -252,15 +224,18 @@ STATICFILES_FINDERS = (
     #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
-STATIC_ROOT = '/var/www/html/'+DOMAIN+'/'
+# Remember to set STATIC_ROOT in settings_local.py
+# then run manage.py collectstatic
+# To serve static files using Apache
+# STATIC_ROOT = '/var/www/html/'+DOMAIN+'/'
 
+# where will static files appear in the URL structure for this app
 STATIC_URL = '/static/'
 
 # OAUTH_TEST_INFO = {'APP_KEY':"ApplicationKey",
 #                    'APP_SECRET': "ApplicationSecret",
 #                    'URL': "https://api.twitter.com/oauth/request_token"
 #                    }
-
 
 ####
 #### PYTHON-SOCIAL-AUTH SETTINGS
@@ -278,7 +253,10 @@ STATIC_URL = '/static/'
 # SOCIAL_AUTH_URL_NAMESPACE = 'social'
 # SOCIAL_AUTH_ADMIN_USER_SEARCH_FIELDS = ['username', 'first_name', 'email']
 
-
+# When testing with Django-OAuth-Toolkit (DOT) localhost can confuse the library
+# Modify your /etc/hosts file to add a domain name for each local service
+# then refer to the service in your app by name.
+# this little trick can save you hours of frustration in testing!
 #127.0.0.1       my-fake-test-redirect-on-localhost.com:8080
 #127.0.0.1       bluefitbutton.ekivemark.com:8000
 
@@ -304,6 +282,7 @@ OAUTH_TEST_INFO = {'CLIENT_ID': 'EJi3gHNyWZpyynuK77A2RQ5uJndruIsze0eivUMw',
 
 OAUTH_VERSION = 2.0
 
+# What is the correct setting for CORS
 CORS_ORIGIN_ALLOW_ALL = True
 
 SETTINGS_EXPORT = [
@@ -312,5 +291,6 @@ SETTINGS_EXPORT = [
     'DOMAIN',
 ]
 
-# login redirects to /accounts/profile unless overridden with LGIN_REDIRECT_URL
+# login redirects to /accounts/profile unless overridden with LOGIN_REDIRECT_URL
 LOGIN_REDIRECT_URL = '/'
+
