@@ -50,6 +50,11 @@ except ImportError:
 # SECURITY WARNING: don't run with debug turned on in production!
 #
 ###################
+try:
+    DEBUG
+except NameError:
+    DEBUG = False
+
 if DEBUG:
     print("THIS APPLICATION IS RUNNING IN DEBUG MODE. SET FALSE FOR PRODUCTION USE!")
     print("We are back from local:", ALLOWED_HOSTS )
@@ -59,13 +64,16 @@ else:
     DEBUG = False
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-
-if not BASE_DIR:
+try:
+    BASE_DIR
+except NameError:
     BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 APPLICATION_ROOT = BASE_DIR
 
-if not SYSNAME:
+try:
+    SYSNAME
+except NameError:
     # Short system name - use it to prefix file names for things such as logging.
     SYSNAME = "fhir_cli"
 
@@ -98,9 +106,10 @@ CUSTOM_APPS = [
 INSTALLED_APPS = BASE_APPS + THIRD_PARTY_APPS + CUSTOM_APPS
 
 # set LOCAL_APPS in .envs.settings_local
-if LOCAL_APPS:
+try:
+    LOCAL_APPS
+except NameError:
     INSTALLED_APPS = INSTALLED_APPS + LOCAL_APPS
-
 
 AUTHENTICATION_BACKENDS = (
     # 'social.backends.open_id.OpenIdAuth',

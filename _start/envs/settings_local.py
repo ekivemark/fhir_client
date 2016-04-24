@@ -29,15 +29,17 @@ SSL = False
 DOMAIN = "client.bbonfhir.com"
 
 # DEBUG Settings:
-DEBUG = True
-DEBUG_SETTINGS = DEBUG
+#DEBUG = True
+# DEBUG_SETTINGS = DEBUG
 
 # Allowed Hosts setting:
 ALLOWED_HOSTS = []
 
 # Get the Server Domain Name. eg. dev.bbonfhir.com
 # ie the server name to address this app
-if DEBUG:
+
+if True:
+#if DEBUG:
     ALLOWED_HOSTS = ['*']
 
 else:
