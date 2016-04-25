@@ -172,13 +172,15 @@ WSGI_APPLICATION = '_start.apache2.wsgi.application'
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
 
 # set DATABASES in envs.settings_local
-if DATABASES:
-    pass
-else:
+
+try:
+
+    DATABASES
+except NameError:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+            'NAME': os.path.join(BASE_DIR, 'db/db.sqlite3'),
         }
     }
 
