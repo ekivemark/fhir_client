@@ -57,11 +57,12 @@ except ImportError:
 try:
     DEBUG
 except NameError:
+    print("DEBUG not set. Setting to False")
     DEBUG = False
 
 if DEBUG:
     print("THIS APPLICATION IS RUNNING IN DEBUG MODE. SET FALSE FOR PRODUCTION USE!")
-    print("We are back from local:", ALLOWED_HOSTS )
+    print("We are back from local with ALLOWED_HOSTS:", ALLOWED_HOSTS )
     print("LOCAL_APPS:", LOCAL_APPS)
     print("SECRET_KEY:", SECRET_KEY)
 else:
@@ -81,6 +82,11 @@ try:
 except NameError:
     # Short system name - use it to prefix file names for things such as logging.
     SYSNAME = "fhir_cli"
+
+try:
+    DOMAIN
+except NameError:
+    DOMAIN = Server_Name()
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
@@ -232,6 +238,9 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'sitestatic'),
 )
 
+if DEBUG:
+    print("STATICFILES_DIRS:", STATICFILES_DIRS)
+
 # List of finder classes that know how to find static files in
 # various locations.
 STATICFILES_FINDERS = (
@@ -244,6 +253,10 @@ STATICFILES_FINDERS = (
 # then run manage.py collectstatic
 # To serve static files using Apache
 # STATIC_ROOT = '/var/www/html/'+DOMAIN+'/'
+try:
+    STATIC_ROOT
+except NameError:
+    STATIC_ROOT = '/var/www/html/'+DOMAIN+'/'
 
 # where will static files appear in the URL structure for this app
 STATIC_URL = '/static/'

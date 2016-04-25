@@ -29,8 +29,8 @@ SSL = False
 DOMAIN = "client.bbonfhir.com"
 
 # DEBUG Settings:
-#DEBUG = True
-# DEBUG_SETTINGS = DEBUG
+DEBUG = True
+DEBUG_SETTINGS = DEBUG
 
 # Allowed Hosts setting:
 ALLOWED_HOSTS = []
