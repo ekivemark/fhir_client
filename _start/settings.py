@@ -57,7 +57,7 @@ except ImportError:
 
 # DEBUG: must be set to False for Production.
 # If DEBUG is not set in settings_local set DEBUG to Fal
-tr
+try:
     DEBUG
 except NameError:
     print("DEBUG not set. Setting to False")
